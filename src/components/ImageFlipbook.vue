@@ -13,6 +13,14 @@
     </slot>
   </div>
   <div class="image-flipbook-container">
+    <div class="flipbook-controls">
+      <button @click="zoomOut" title="Alejar">-</button>
+      <span class="zoom-label">Zoom</span>
+      <button @click="zoomIn" title="Acercar">+</button>
+      <button @click="togglePanMode" :class="{ active: isPanMode }" title="Arrastrar libro (activar/desactivar)" class="pan-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2v7h1V4a2 2 0 1 1 4 0v10.5a1.5 1.5 0 0 1-3 0V13h-1v7a2 2 0 1 1-4 0v-7h-1v3.5a1.5 1.5 0 0 1-3 0V8a2 2 0 1 1 4 0v3h1V4a2 2 0 0 1 2-2z"/></svg>
+      </button>
+    </div>
     <div ref="flipbookRef" class="flipbook-root"></div>
   </div>
 </template>
@@ -24,6 +32,11 @@ import { PageFlip } from 'page-flip';
 const validImages = ref([]);
 const flipbookRef = ref(null);
 let pageFlipInstance = null;
+const zoom = ref(1);
+const isPanMode = ref(false);
+let isPanning = false;
+let panStart = null;
+let panOrigin = { x: 0, y: 0 };
 
 onMounted(async () => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -51,6 +64,59 @@ onMounted(async () => {
     console.warn('No images found for flipbook.');
   }
 });
+
+function zoomIn() {
+  zoom.value = Math.min(zoom.value + 0.1, 2);
+  updateZoom();
+}
+function zoomOut() {
+  zoom.value = Math.max(zoom.value - 0.1, 0.5);
+  updateZoom();
+}
+function updateZoom() {
+  if (flipbookRef.value) {
+    flipbookRef.value.style.transform = `scale(${zoom.value}) translate(0, 0)`;
+    flipbookRef.value.style.transition = 'transform 0.2s';
+  }
+}
+
+function togglePanMode() {
+  isPanMode.value = !isPanMode.value;
+  if (isPanMode.value) {
+    flipbookRef.value.style.cursor = 'grab';
+    flipbookRef.value.addEventListener('mousedown', startPan);
+  } else {
+    flipbookRef.value.style.cursor = '';
+    flipbookRef.value.removeEventListener('mousedown', startPan);
+    if (isPanning) disablePan();
+  }
+}
+function startPan(e) {
+  isPanning = true;
+  panStart = { x: e.clientX, y: e.clientY };
+  const style = window.getComputedStyle(flipbookRef.value);
+  const matrix = new DOMMatrixReadOnly(style.transform);
+  panOrigin = { x: matrix.m41, y: matrix.m42 };
+  window.addEventListener('mousemove', onPan);
+  window.addEventListener('mouseup', disablePan);
+  flipbookRef.value.style.cursor = 'grabbing';
+}
+function onPan(e) {
+  if (!isPanning) return;
+  const dx = e.clientX - panStart.x;
+  const dy = e.clientY - panStart.y;
+  flipbookRef.value.style.transform = `scale(${zoom.value}) translate(${panOrigin.x + dx}px, ${panOrigin.y + dy}px)`;
+}
+function disablePan() {
+  isPanning = false;
+  window.removeEventListener('mousemove', onPan);
+  window.removeEventListener('mouseup', disablePan);
+  if (isPanMode.value) {
+    flipbookRef.value.style.cursor = 'grab';
+  } else {
+    flipbookRef.value.style.cursor = '';
+  }
+}
 </script>
 
 <style scoped>
@@ -146,6 +212,42 @@ onMounted(async () => {
   align-items: center; /* Cambiado de flex-start a center para centrar verticalmente */
 }
 
+.flipbook-controls {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 200;
+  background: #222d;
+  border-radius: 1.5em;
+  box-shadow: 0 2px 8px #0006;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.4em 1em;
+}
+.flipbook-controls button {
+  background: #3c8cff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  font-size: 1.3em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.flipbook-controls button:hover {
+  background: #2563eb;
+  transform: scale(1.15);
+}
+.zoom-label {
+  color: #fff;
+  font-size: 1em;
+  margin: 0 0.5em;
+  font-family: inherit;
+}
+
 .flipbook-root {
   margin: 0 auto;
   box-shadow: 0 2px 16px #0006;
@@ -166,5 +268,26 @@ onMounted(async () => {
   height: auto;
   display: block;
   margin: 0 auto;
+}
+
+.pan-btn {
+  background: #fff2;
+  border: none;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: background 0.2s, transform 0.2s;
+}
+.pan-btn.active, .pan-btn:active {
+  background: #3c8cff;
+  color: #fff;
+  cursor: grab;
+}
+.pan-btn svg {
+  pointer-events: none;
 }
 </style>
