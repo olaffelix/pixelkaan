@@ -1,10 +1,13 @@
 <script setup>
 import ImageFlipbook from './components/ImageFlipbook.vue';
+import FooterSocial from './components/FooterSocial.vue';
 </script>
 
 <template>
   <div>
     <ImageFlipbook />
+    <router-view />
+    <FooterSocial />
   </div>
 </template>
 
