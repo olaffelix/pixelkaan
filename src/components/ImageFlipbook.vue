@@ -17,17 +17,19 @@
 import { onMounted, ref } from 'vue';
 import { PageFlip } from 'page-flip';
 
-// Detecta automáticamente el número de páginas usando import.meta.glob (Vite)
-const images = Object.keys(import.meta.glob('/public/pdf/file_page-*.jpg', { eager: true }))
-  .map(path => path.replace('/public', ''))
-  .sort();
-const validImages = ref(images);
-
+const validImages = ref([]);
 const flipbookRef = ref(null);
 let pageFlipInstance = null;
 
-onMounted(() => {
-  if (flipbookRef.value) {
+onMounted(async () => {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  // Carga la lista de imágenes generada por el script
+  const res = await fetch(`${base}/pdf/lista.json`);
+  const files = await res.json();
+  // Elimina doble slash si base termina en / o si no
+  validImages.value = files.map(f => `${base}/pdf/${f}`.replace(/\/+/g, '/'));
+
+  if (flipbookRef.value && validImages.value.length > 0) {
     pageFlipInstance = new PageFlip(flipbookRef.value, {
       width: 600,
       height: 800,
@@ -41,6 +43,8 @@ onMounted(() => {
       mobileScrollSupport: true
     });
     pageFlipInstance.loadFromImages(validImages.value);
+  } else {
+    console.warn('No images found for flipbook.');
   }
 });
 </script>
