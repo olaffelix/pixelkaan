@@ -12,13 +12,16 @@
       </p>
     </slot>
   </div>
-  <div class="image-flipbook-container">
+  <div ref="flipbookContainerRef" class="image-flipbook-container">
     <div class="flipbook-controls">
       <button @click="zoomOut" title="Alejar">-</button>
       <span class="zoom-label">Zoom</span>
       <button @click="zoomIn" title="Acercar">+</button>
       <button @click="resetZoomAndPan" title="Centrar y tamaño normal" class="reset-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.3-.42 2.5-1.13 3.47l1.46 1.46C19.09 15.07 20 13.13 20 11c0-4.42-3.58-8-8-8zm-6.87 2.53L3.67 7.99C2.91 8.93 2 10.87 2 13c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6 0-1.3.42-2.5 1.13-3.47z"/></svg>
+      </button>
+      <button @click="toggleFullscreen" title="Pantalla completa" class="fullscreen-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 7h-3v2h5v-5h-2v3zm0-12h-5v2h3v3h2V5z"/></svg>
       </button>
       <button @click="togglePanMode" :class="{ active: isPanMode }" title="Arrastrar libro (activar/desactivar)" class="pan-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2v7h1V4a2 2 0 1 1 4 0v10.5a1.5 1.5 0 0 1-3 0V13h-1v7a2 2 0 1 1-4 0v-7h-1v3.5a1.5 1.5 0 0 1-3 0V8a2 2 0 1 1 4 0v3h1V4a2 2 0 0 1 2-2z"/></svg>
@@ -34,6 +37,7 @@ import { PageFlip } from 'page-flip';
 
 const validImages = ref([]);
 const flipbookRef = ref(null);
+const flipbookContainerRef = ref(null);
 let pageFlipInstance = null;
 const zoom = ref(1);
 const minZoom = ref(1); // El zoom mínimo será 1 (ocupa el panel)
@@ -180,6 +184,16 @@ function disablePan() {
     flipbookRef.value.style.cursor = 'grab';
   } else {
     flipbookRef.value.style.cursor = '';
+  }
+}
+
+function toggleFullscreen() {
+  const el = flipbookContainerRef.value;
+  if (!el) return;
+  if (!document.fullscreenElement) {
+    el.requestFullscreen();
+  } else {
+    document.exitFullscreen();
   }
 }
 </script>
@@ -357,6 +371,24 @@ function disablePan() {
   pointer-events: none;
 }
 
+.fullscreen-btn {
+  background: #fff2;
+  border: none;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  margin-left: 0.2em;
+}
+.fullscreen-btn:hover {
+  background: #3c8cff;
+  color: #fff;
+}
+
 @media (max-width: 900px) {
   .flipbook-root {
     width: 98vw;
@@ -410,3 +442,5 @@ function disablePan() {
   }
 }
 </style>
+
+<!-- Cambia el div principal del flipbook para usar ref -->
