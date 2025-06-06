@@ -266,10 +266,12 @@ function disablePan() {
   background: #222;
   position: relative;
   z-index: 100;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
 .flipbook-controls {
@@ -309,18 +311,19 @@ function disablePan() {
 }
 
 .flipbook-root {
-  margin: 0 auto;
-  box-shadow: 0 2px 16px #0006;
-  background: #fff;
-  border-radius: 8px;
-  max-width: 100vw;
-  max-height: 100vh;
-  width: 90vw;
-  height: 80vh;
+  background: transparent;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: width 0.2s, height 0.2s;
+  /* El tamaño real del libro lo define PageFlip, no forzamos width/height aquí */
+  width: auto;
+  height: auto;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .flipbook-root img {
