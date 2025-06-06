@@ -1,32 +1,122 @@
 [
-  "file_page-0001.jpg",
-  "file_page-0002.jpg",
-  "file_page-0003.jpg",
-  "file_page-0004.jpg",
-  "file_page-0005.jpg",
-  "file_page-0006.jpg",
-  "file_page-0007.jpg",
-  "file_page-0008.jpg",
-  "file_page-0009.jpg",
-  "file_page-0010.jpg",
-  "file_page-0011.jpg",
-  "file_page-0012.jpg",
-  "file_page-0013.jpg",
-  "file_page-0014.jpg",
-  "file_page-0015.jpg",
-  "file_page-0016.jpg",
-  "file_page-0017.jpg",
-  "file_page-0018.jpg",
-  "file_page-0019.jpg",
-  "file_page-0020.jpg",
-  "file_page-0021.jpg",
-  "file_page-0022.jpg",
-  "file_page-0023.jpg",
-  "file_page-0024.jpg",
-  "file_page-0025.jpg",
-  "file_page-0026.jpg",
-  "file_page-0027.jpg",
-  "file_page-0028.jpg",
-  "file_page-0029.jpg",
-  "file_page-0030.jpg"
+  {
+    "src": "file_page-0001.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0002.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0003.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0004.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0005.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0006.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0007.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0008.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0009.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0010.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0011.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0012.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0013.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0014.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0015.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0016.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0017.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0018.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0019.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0020.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0021.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0022.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0023.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0024.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0025.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0026.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0027.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0028.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0029.jpg",
+    "hd": null
+  },
+  {
+    "src": "file_page-0030.jpg",
+    "hd": null
+  }
 ]

@@ -37,14 +37,32 @@ const isPanMode = ref(false);
 let isPanning = false;
 let panStart = null;
 let panOrigin = { x: 0, y: 0 };
+let imageList = [];
 
 onMounted(async () => {
-  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-  // Carga la lista de imágenes generada por el script
-  const res = await fetch(`${base}/pdf/lista.json`);
-  const files = await res.json();
-  // Elimina doble slash si base termina en / o si no
-  validImages.value = files.map(f => `${base}/pdf/${f}`.replace(/\/+/g, '/'));
+  let base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  let listaPath = `${base}/pdf/lista.json`;
+  let files = [];
+  try {
+    const res = await fetch(listaPath);
+    files = await res.json();
+  } catch (e) {
+    try {
+      const res = await fetch('/pdf/lista.json');
+      files = await res.json();
+    } catch (err) {
+      console.warn('No se pudo cargar lista.json en ninguna ruta');
+      files = [];
+    }
+  }
+  // Soporta ambos formatos: array de strings o array de objetos
+  if (Array.isArray(files) && files.length && typeof files[0] === 'object') {
+    imageList = files;
+    validImages.value = files.map(f => `${base}/pdf/${f.src}`.replace(/\/+/g, '/'));
+  } else {
+    imageList = files.map(f => ({ src: f, hd: null }));
+    validImages.value = files.map(f => `${base}/pdf/${f}`.replace(/\/+/g, '/'));
+  }
 
   if (flipbookRef.value && validImages.value.length > 0) {
     pageFlipInstance = new PageFlip(flipbookRef.value, {
@@ -59,19 +77,49 @@ onMounted(async () => {
       showCover: true,
       mobileScrollSupport: true
     });
+    // Cargar imágenes normales al inicio
     pageFlipInstance.loadFromImages(validImages.value);
+    // Escuchar cambio de página para actualizar a HD si aplica
+    pageFlipInstance.on('flip', updateHDImagesIfNeeded);
   } else {
     console.warn('No images found for flipbook.');
   }
 });
 
+function updateHDImagesIfNeeded() {
+  if (!pageFlipInstance || !imageList.length) return;
+  // Si el zoom es alto, intentar cargar HD
+  if (zoom.value > 1.15) {
+    const imgs = Array.from(flipbookRef.value.querySelectorAll('img'));
+    imgs.forEach((img, idx) => {
+      const info = imageList[idx];
+      if (info && info.hd) {
+        const hdUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/pdf/${info.hd}`.replace(/\/+/g, '/');
+        if (!img.src.endsWith(info.hd)) img.src = hdUrl;
+      }
+    });
+  } else {
+    // Volver a la imagen normal si el zoom baja
+    const imgs = Array.from(flipbookRef.value.querySelectorAll('img'));
+    imgs.forEach((img, idx) => {
+      const info = imageList[idx];
+      if (info && info.src) {
+        const normalUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/pdf/${info.src}`.replace(/\/+/g, '/');
+        if (!img.src.endsWith(info.src)) img.src = normalUrl;
+      }
+    });
+  }
+}
+
 function zoomIn() {
   zoom.value = Math.min(zoom.value + 0.1, 2);
   updateZoom();
+  updateHDImagesIfNeeded();
 }
 function zoomOut() {
   zoom.value = Math.max(zoom.value - 0.1, 0.5);
   updateZoom();
+  updateHDImagesIfNeeded();
 }
 function updateZoom() {
   if (flipbookRef.value) {
@@ -120,13 +168,7 @@ function disablePan() {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Permanent+Marker&family=Montserrat:wght@600&display=swap');
-@font-face {
-  font-family: 'Calendas Plus';
-  src: url('https://fonts.cdnfonts.com/s/16244/Calendas_Plus.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Permanent+Marker&family=Montserrat:wght@600&family=Playfair+Display:wght@700&display=swap');
 
 .pdf-site-content {
   padding-top: 1rem;
@@ -170,11 +212,12 @@ function disablePan() {
   max-width: 700px;
   margin: 0 auto 1.2rem auto;
   font-size: 1.3rem;
-  font-family: 'Calendas Plus', 'Montserrat', 'Arial', sans-serif;
+  font-family: 'Playfair Display', 'Montserrat', 'Arial', sans-serif;
   font-weight: 600;
   letter-spacing: 1.5px;
   color: #ffb300;
   background: none;
+  background-clip: initial;
   -webkit-background-clip: initial;
   -webkit-text-fill-color: initial;
   animation: none;

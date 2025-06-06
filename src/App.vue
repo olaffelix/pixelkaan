@@ -6,7 +6,6 @@ import FooterSocial from './components/FooterSocial.vue';
 <template>
   <div>
     <ImageFlipbook />
-    <router-view />
     <FooterSocial />
   </div>
 </template>
