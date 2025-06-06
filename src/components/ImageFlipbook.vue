@@ -206,10 +206,10 @@ function disablePan() {
   background: #222;
   position: relative;
   z-index: 100;
-  overflow: hidden; /* Cambiado de auto a hidden para evitar scroll */
+  overflow: hidden;
   display: flex;
   justify-content: center;
-  align-items: center; /* Cambiado de flex-start a center para centrar verticalmente */
+  align-items: center;
 }
 
 .flipbook-controls {
@@ -255,9 +255,12 @@ function disablePan() {
   border-radius: 8px;
   max-width: 100vw;
   max-height: 100vh;
+  width: 90vw;
+  height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: width 0.2s, height 0.2s;
 }
 
 .flipbook-root img {
@@ -289,5 +292,58 @@ function disablePan() {
 }
 .pan-btn svg {
   pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .flipbook-root {
+    width: 98vw;
+    height: 70vw;
+    max-width: 98vw;
+    max-height: 80vh;
+  }
+  .flipbook-controls {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3em 0.7em;
+    gap: 0.3em;
+  }
+  .pdf-title {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .pdf-desc {
+    font-size: 1rem;
+    max-width: 95vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .flipbook-root {
+    width: 100vw;
+    height: 60vw;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100vw;
+    max-height: 60vh;
+  }
+  .pdf-site-content {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .pdf-title {
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+    letter-spacing: 1px;
+  }
+  .pdf-desc {
+    font-size: 0.9rem;
+    max-width: 98vw;
+  }
+  .flipbook-controls {
+    top: 0.2rem;
+    right: 0.2rem;
+    padding: 0.2em 0.4em;
+    gap: 0.2em;
+  }
 }
 </style>
