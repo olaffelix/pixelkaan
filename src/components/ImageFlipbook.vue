@@ -77,16 +77,31 @@ onMounted(async () => {
   background: #222;
   position: relative;
   z-index: 100;
-  overflow: auto;
+  overflow: hidden; /* Cambiado de auto a hidden para evitar scroll */
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center; /* Cambiado de flex-start a center para centrar verticalmente */
 }
 
 .flipbook-root {
-  margin: 2rem auto;
+  margin: 0 auto;
   box-shadow: 0 2px 16px #0006;
   background: #fff;
   border-radius: 8px;
+  max-width: 100vw;
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipbook-root img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 </style>

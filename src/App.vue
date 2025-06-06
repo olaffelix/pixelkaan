@@ -1,13 +1,9 @@
 <script setup>
-// import HelloWorld from './components/HelloWorld.vue';
-// import FlipbookPdf from './components/FlipbookPdf.vue';
 import ImageFlipbook from './components/ImageFlipbook.vue';
 </script>
 
 <template>
   <div>
-    <!-- <HelloWorld msg="Vite + Vue" /> -->
-    <!-- <FlipbookPdf /> -->
     <ImageFlipbook />
   </div>
 </template>
