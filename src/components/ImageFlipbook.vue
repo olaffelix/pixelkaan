@@ -33,7 +33,7 @@ const validImages = ref([]);
 const flipbookRef = ref(null);
 let pageFlipInstance = null;
 const zoom = ref(1);
-const isPanMode = ref(false);
+const isPanMode = ref(true); // Activado por defecto
 let isPanning = false;
 let panStart = null;
 let panOrigin = { x: 0, y: 0 };
@@ -77,10 +77,13 @@ onMounted(async () => {
       showCover: true,
       mobileScrollSupport: true
     });
-    // Cargar imágenes normales al inicio
     pageFlipInstance.loadFromImages(validImages.value);
-    // Escuchar cambio de página para actualizar a HD si aplica
     pageFlipInstance.on('flip', updateHDImagesIfNeeded);
+    // Activar arrastre si está en modo pan al montar
+    if (isPanMode.value) {
+      flipbookRef.value.style.cursor = 'grab';
+      flipbookRef.value.addEventListener('mousedown', startPan);
+    }
   } else {
     console.warn('No images found for flipbook.');
   }
