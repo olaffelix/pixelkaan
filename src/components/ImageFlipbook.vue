@@ -14,6 +14,12 @@
   </div>
   <div ref="flipbookContainerRef" class="image-flipbook-container">
     <div class="flipbook-controls">
+      <button @click="goToPrevPage" title="Página anterior" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button @click="goToNextPage" title="Página siguiente" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
       <button @click="zoomOut" title="Alejar" class="control-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
@@ -36,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 import { PageFlip } from 'page-flip';
 
 const validImages = ref([]);
@@ -99,6 +105,11 @@ onMounted(async () => {
   } else {
     console.warn('No images found for flipbook.');
   }
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
 });
 
 function updateHDImagesIfNeeded() {
@@ -198,6 +209,21 @@ function toggleFullscreen() {
     el.requestFullscreen();
   } else {
     document.exitFullscreen();
+  }
+}
+
+function goToPrevPage() {
+  if (pageFlipInstance) pageFlipInstance.flipPrev();
+}
+function goToNextPage() {
+  if (pageFlipInstance) pageFlipInstance.flipNext();
+}
+
+function handleKeydown(e) {
+  if (e.key === 'ArrowLeft') {
+    goToPrevPage();
+  } else if (e.key === 'ArrowRight') {
+    goToNextPage();
   }
 }
 </script>
