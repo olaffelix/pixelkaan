@@ -22,7 +22,7 @@ const pdfUrl = '/file.pdf';
 <style scoped>
 .pdf-site-content {
   padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 0rem;
   background: #f9f9f9;
   text-align: center;
 }

@@ -206,8 +206,8 @@ function toggleFullscreen() {
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Permanent+Marker&family=Montserrat:wght@600&family=Playfair+Display:wght@700&display=swap');
 
 .pdf-site-content {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
   background: transparent;
   text-align: center;
   box-shadow: none;

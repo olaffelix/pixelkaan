@@ -18,7 +18,8 @@
 <style scoped>
 .footer-social {
   width: 98vw;
-  background: #181818;
+  /* background: #181818; */
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   color: #fff;
   display: flex;
   justify-content: center;
