@@ -20,6 +20,8 @@
       <button @click="goToNextPage" title="Página siguiente" class="control-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
+      <input type="number" min="1" :max="totalPages" v-model.number="pageInput" @change="onPageInputChange" class="page-input" :title="`Ir a página (1-${totalPages})`" />
+      <span class="page-label">/ {{ totalPages }}</span>
       <button @click="zoomOut" title="Alejar" class="control-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
@@ -56,6 +58,8 @@ let isPanning = false;
 let panStart = null;
 let panOrigin = { x: 0, y: 0 };
 let imageList = [];
+const pageInput = ref(1);
+const totalPages = ref(0);
 
 onMounted(async () => {
   let base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -97,6 +101,9 @@ onMounted(async () => {
     });
     pageFlipInstance.loadFromImages(validImages.value);
     pageFlipInstance.on('flip', updateHDImagesIfNeeded);
+    pageFlipInstance.on('flip', onFlip);
+    totalPages.value = validImages.value.length;
+    pageInput.value = 1;
     // Activar arrastre si está en modo pan al montar
     if (isPanMode.value) {
       flipbookRef.value.style.cursor = 'grab';
@@ -219,6 +226,18 @@ function goToNextPage() {
   if (pageFlipInstance) pageFlipInstance.flipNext();
 }
 
+function onPageInputChange() {
+  if (!pageFlipInstance) return;
+  let page = Math.max(1, Math.min(pageInput.value, totalPages.value));
+  pageInput.value = page;
+  pageFlipInstance.flip(page - 1);
+}
+
+// Actualizar el input cuando cambia la página
+function onFlip(e) {
+  pageInput.value = e.data + 1;
+}
+
 function handleKeydown(e) {
   if (e.key === 'ArrowLeft') {
     goToPrevPage();
@@ -306,7 +325,7 @@ function handleKeydown(e) {
 
 .image-flipbook-container {
   width: 98vw;
-  height: 100vh;
+  height: 100dvh;
   background: #222;
   position: relative;
   z-index: 100;
@@ -315,6 +334,7 @@ function handleKeydown(e) {
   align-items: center;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 .flipbook-controls {
@@ -366,11 +386,11 @@ function handleKeydown(e) {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* El tamaño real del libro lo define PageFlip, no forzamos width/height aquí */
   width: auto;
   height: auto;
   max-width: 100vw;
   max-height: 100vh;
+  box-sizing: border-box;
 }
 
 .flipbook-root img {
@@ -420,6 +440,24 @@ function handleKeydown(e) {
 .fullscreen-btn:hover {
   background: #3c8cff;
   color: #fff;
+}
+
+.page-input {
+  width: 3em;
+  text-align: center;
+  font-size: 1em;
+  border: 1px solid #3c8cff;
+  border-radius: 0.3em;
+  background: #222;
+  color: #fff;
+  margin: 0 0.2em;
+  outline: none;
+  height: 2.2em;
+}
+.page-label {
+  color: #fff;
+  font-size: 1em;
+  margin-right: 0.5em;
 }
 
 @media (max-width: 900px) {
