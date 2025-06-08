@@ -14,17 +14,21 @@
   </div>
   <div ref="flipbookContainerRef" class="image-flipbook-container">
     <div class="flipbook-controls">
-      <button @click="zoomOut" title="Alejar">-</button>
+      <button @click="zoomOut" title="Alejar" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
       <span class="zoom-label">Zoom</span>
-      <button @click="zoomIn" title="Acercar">+</button>
-      <button @click="resetZoomAndPan" title="Centrar y tamaño normal" class="reset-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.3-.42 2.5-1.13 3.47l1.46 1.46C19.09 15.07 20 13.13 20 11c0-4.42-3.58-8-8-8zm-6.87 2.53L3.67 7.99C2.91 8.93 2 10.87 2 13c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6 0-1.3.42-2.5 1.13-3.47z"/></svg>
+      <button @click="zoomIn" title="Acercar" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
-      <button @click="toggleFullscreen" title="Pantalla completa" class="fullscreen-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 7h-3v2h5v-5h-2v3zm0-12h-5v2h3v3h2V5z"/></svg>
+      <button @click="resetZoomAndPan" title="Centrar y tamaño normal" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
       </button>
-      <button @click="togglePanMode" :class="{ active: isPanMode }" title="Arrastrar libro (activar/desactivar)" class="pan-btn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2v7h1V4a2 2 0 1 1 4 0v10.5a1.5 1.5 0 0 1-3 0V13h-1v7a2 2 0 1 1-4 0v-7h-1v3.5a1.5 1.5 0 0 1-3 0V8a2 2 0 1 1 4 0v3h1V4a2 2 0 0 1 2-2z"/></svg>
+      <button @click="toggleFullscreen" title="Pantalla completa" class="control-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      </button>
+      <button @click="togglePanMode" :class="['control-btn', { active: isPanMode }]" title="Arrastrar libro (activar/desactivar)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V7a2 2 0 1 1 4 0v8"/><path d="M11 7a2 2 0 1 1 4 0v6"/><path d="M15 11a2 2 0 1 1 4 0v2a2 2 0 1 1-4 0v-2z"/><circle cx="12" cy="17" r="2"/></svg>
       </button>
     </div>
     <div ref="flipbookRef" class="flipbook-root"></div>
@@ -275,12 +279,11 @@ function toggleFullscreen() {
 }
 
 .image-flipbook-container {
-  width: 100vw;
+  width: 98vw;
   height: 100vh;
   background: #222;
   position: relative;
   z-index: 100;
-  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -301,27 +304,31 @@ function toggleFullscreen() {
   gap: 0.5em;
   padding: 0.4em 1em;
 }
-.flipbook-controls button {
+.control-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0.4em;
+  width: 2.5em;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  color: #fff;
+  box-shadow: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+.control-btn svg {
+  display: block;
+  margin: auto;
+}
+.control-btn:hover, .control-btn.active {
   background: #3c8cff;
   color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 2em;
-  height: 2em;
-  font-size: 1.3em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-.flipbook-controls button:hover {
-  background: #2563eb;
-  transform: scale(1.15);
-}
-.zoom-label {
-  color: #fff;
-  font-size: 1em;
-  margin: 0 0.5em;
-  font-family: inherit;
+  box-shadow: 0 2px 8px #0003;
 }
 
 .flipbook-root {

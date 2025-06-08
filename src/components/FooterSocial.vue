@@ -17,7 +17,7 @@
 
 <style scoped>
 .footer-social {
-  width: 100vw;
+  width: 98vw;
   background: #181818;
   color: #fff;
   display: flex;
