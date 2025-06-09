@@ -359,27 +359,34 @@ function handleKeydown(e) {
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
+  touch-action: pan-x pan-y;
 }
 
 .flipbook-controls {
   position: absolute;
-  top: 1.5rem;
-  right: 2rem;
+  top: 0.5rem;
+  left: 0;
+  right: 0;
   z-index: 200;
   background: #222d;
   border-radius: 1.5em;
   box-shadow: 0 2px 8px #0006;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5em;
-  padding: 0.4em 1em;
+  justify-content: center;
+  gap: 0.3em;
+  padding: 0.3em 0.5em;
+  width: 98vw;
+  max-width: 100vw;
 }
+
 .control-btn {
   background: transparent;
   border: none;
   border-radius: 0.4em;
-  width: 2.5em;
-  height: 2.5em;
+  width: 2.2em;
+  height: 2.2em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,15 +398,6 @@ function handleKeydown(e) {
   margin: 0;
   padding: 0;
 }
-.control-btn svg {
-  display: block;
-  margin: auto;
-}
-.control-btn:hover, .control-btn.active {
-  background: #3c8cff;
-  color: #fff;
-  box-shadow: 0 2px 8px #0003;
-}
 
 .flipbook-root {
   background: transparent;
@@ -410,8 +408,8 @@ function handleKeydown(e) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
-  height: auto;
+  width: 100vw;
+  height: 100vh;
   max-width: 100vw;
   max-height: 100vh;
   box-sizing: border-box;
@@ -467,39 +465,44 @@ function handleKeydown(e) {
 }
 
 .page-input {
-  width: 3em;
+  width: 2.5em;
+  min-width: 2em;
   text-align: center;
   font-size: 1em;
   border: 1px solid #3c8cff;
   border-radius: 0.3em;
   background: #222;
   color: #fff;
-  margin: 0 0.2em;
+  margin: 0 0.1em;
   outline: none;
-  height: 2.2em;
+  height: 2em;
 }
+
 .page-label {
   color: #fff;
   font-size: 1em;
-  margin-right: 0.5em;
+  margin-right: 0.2em;
 }
 
 @media (max-width: 900px) {
   .flipbook-root {
     width: 98vw;
-    height: 70vw;
-    max-width: 98vw;
+    height: 80vw;
+    max-width: 100vw;
     max-height: 80vh;
   }
   .flipbook-controls {
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.3em 0.7em;
-    gap: 0.3em;
+    top: 0.2rem;
+    left: 0;
+    right: 0;
+    padding: 0.2em 0.2em;
+    gap: 0.2em;
+    width: 99vw;
+    max-width: 100vw;
   }
   .pdf-title {
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
   }
   .pdf-desc {
     font-size: 1rem;
@@ -516,24 +519,43 @@ function handleKeydown(e) {
     max-width: 100vw;
     max-height: 60vh;
   }
-  .pdf-site-content {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  .pdf-title {
-    font-size: 1.1rem;
-    margin-top: 0.2rem;
-    letter-spacing: 1px;
-  }
-  .pdf-desc {
-    font-size: 0.9rem;
-    max-width: 98vw;
+  .image-flipbook-container {
+    width: 100vw;
+    height: 100dvh;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100vw;
+    max-height: 100dvh;
+    padding: 0;
   }
   .flipbook-controls {
-    top: 0.2rem;
-    right: 0.2rem;
-    padding: 0.2em 0.4em;
-    gap: 0.2em;
+    top: 0.1rem;
+    left: 0;
+    right: 0;
+    padding: 0.1em 0.1em;
+    gap: 0.1em;
+    width: 100vw;
+    max-width: 100vw;
+    font-size: 0.9em;
+  }
+  .pdf-title {
+    font-size: 0.9rem;
+    margin-top: 0.1rem;
+    letter-spacing: 0.5px;
+  }
+  .pdf-desc {
+    font-size: 0.8rem;
+    max-width: 98vw;
+  }
+  .page-input {
+    width: 2em;
+    min-width: 1.5em;
+    font-size: 0.9em;
+    height: 1.7em;
+  }
+  .control-btn {
+    width: 1.7em;
+    height: 1.7em;
   }
 }
 </style>
