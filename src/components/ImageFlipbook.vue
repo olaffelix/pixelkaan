@@ -115,8 +115,8 @@ onMounted(async () => {
       size: 'stretch',
       minWidth: 315,
       minHeight: 420,
-      maxWidth: 1000,
-      maxHeight: 1350,
+      maxWidth: 1500,
+      maxHeight: 1850,
       maxShadowOpacity: 0.5,
       showCover: true,
       mobileScrollSupport: true
@@ -181,7 +181,7 @@ function resetZoomAndPan() {
 }
 
 function zoomIn() {
-  zoom.value = Math.min(zoom.value + 0.1, 2);
+  zoom.value = Math.min(zoom.value + 0.1, 4);
   updateZoom();
   updateHDImagesIfNeeded();
 }
@@ -292,6 +292,71 @@ function handleKeydown(e) {
     goToNextPage();
   }
 }
+
+// --- ZOOM CON TOUCHPAD Y PINCH ---
+let lastTouchDist = null;
+
+function getTouchDist(e) {
+  if (e.touches.length < 2) return 0;
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function onWheelZoom(e) {
+  // Permite zoom con cualquier gesto de scroll (sin requerir Ctrl)
+  e.preventDefault();
+  if (e.deltaY < 0) {
+    zoomIn();
+  } else if (e.deltaY > 0) {
+    zoomOut();
+  }
+}
+
+function onTouchStartZoom(e) {
+  if (e.touches.length === 2) {
+    lastTouchDist = getTouchDist(e);
+  }
+}
+
+function onTouchMoveZoom(e) {
+  if (e.touches.length === 2 && lastTouchDist !== null) {
+    const dist = getTouchDist(e);
+    if (dist && lastTouchDist) {
+      if (dist > lastTouchDist + 8) { // Umbral para evitar saltos
+        zoomIn();
+        lastTouchDist = dist;
+      } else if (dist < lastTouchDist - 8) {
+        zoomOut();
+        lastTouchDist = dist;
+      }
+    }
+  }
+}
+
+function onTouchEndZoom(e) {
+  if (e.touches.length < 2) {
+    lastTouchDist = null;
+  }
+}
+
+onMounted(() => {
+  if (flipbookRef.value) {
+    flipbookRef.value.addEventListener('wheel', onWheelZoom, { passive: false });
+    flipbookRef.value.addEventListener('touchstart', onTouchStartZoom, { passive: false });
+    flipbookRef.value.addEventListener('touchmove', onTouchMoveZoom, { passive: false });
+    flipbookRef.value.addEventListener('touchend', onTouchEndZoom, { passive: false });
+  }
+});
+
+onUnmounted(() => {
+  if (flipbookRef.value) {
+    flipbookRef.value.removeEventListener('wheel', onWheelZoom);
+    flipbookRef.value.removeEventListener('touchstart', onTouchStartZoom);
+    flipbookRef.value.removeEventListener('touchmove', onTouchMoveZoom);
+    flipbookRef.value.removeEventListener('touchend', onTouchEndZoom);
+  }
+});
 </script>
 
 <style scoped>
