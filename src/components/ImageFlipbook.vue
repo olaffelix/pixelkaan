@@ -2,10 +2,20 @@
   <div class="pdf-site-content">
     <slot>
       <h1 class="pdf-title">
-        <span v-for="(char, i) in 'Bienvenido a Pixel Ka\'an'" :key="i" :style="`--i:${i}`">{{ char === ' ' ? '\u00A0' : char }}</span>
+        <template v-if="supportsAnimatedTitle">
+          <span v-for="(char, i) in 'Bienvenido a Pixel Ka\'an'" :key="i" :style="`--i:${i}`">{{ char === ' ' ? '\u00A0' : char }}</span>
+        </template>
+        <template v-else>
+          Bienvenido a Pixel Ka'an
+        </template>
       </h1>
       <h2 class="pdf-title">
-        <span v-for="(char, i) in 'ANIMACIÓN DIGITAL ESCÁRCEGA'" :key="'h2-'+i" :style="`--i:${i}`">{{ char === ' ' ? '\u00A0' : char }}</span>
+        <template v-if="supportsAnimatedTitle">
+          <span v-for="(char, i) in 'ANIMACIÓN DIGITAL ESCÁRCEGA'" :key="'h2-'+i" :style="`--i:${i}`">{{ char === ' ' ? '\u00A0' : char }}</span>
+        </template>
+        <template v-else>
+          ANIMACIÓN DIGITAL ESCÁRCEGA
+        </template>
       </h2>
       <p class="pdf-desc">
         La revista que traza la cultura escarceguense.
@@ -44,7 +54,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, onUnmounted } from 'vue';
+import { onMounted, ref, onUnmounted, computed } from 'vue';
 import { PageFlip } from 'page-flip';
 
 const validImages = ref([]);
@@ -60,6 +70,17 @@ let panOrigin = { x: 0, y: 0 };
 let imageList = [];
 const pageInput = ref(1);
 const totalPages = ref(0);
+
+const supportsAnimatedTitle = computed(() => {
+  // Detecta soporte básico de CSS variables y span
+  try {
+    const test = document.createElement('span');
+    test.style.setProperty('--i', 1);
+    return window.CSS && CSS.supports('animation', 'name') && test.style.getPropertyValue('--i') !== undefined;
+  } catch {
+    return false;
+  }
+});
 
 onMounted(async () => {
   let base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -168,6 +189,7 @@ function updateZoom() {
   if (flipbookRef.value) {
     flipbookRef.value.style.transform = `scale(${zoom.value}) translate(0, 0)`;
     flipbookRef.value.style.transition = 'transform 0.2s';
+    panOrigin = { x: 0, y: 0 };
   }
 }
 
@@ -198,6 +220,7 @@ function onPan(e) {
   const dy = e.clientY - panStart.y;
   flipbookRef.value.style.transform = `scale(${zoom.value}) translate(${panOrigin.x + dx}px, ${panOrigin.y + dy}px)`;
 }
+
 function disablePan() {
   isPanning = false;
   window.removeEventListener('mousemove', onPan);
@@ -335,6 +358,7 @@ function handleKeydown(e) {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .flipbook-controls {
