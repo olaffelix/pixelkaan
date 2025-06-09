@@ -42,7 +42,7 @@
       <button @click="resetZoomAndPan" title="Centrar y tamaño normal" class="control-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
       </button>
-      <button @click="toggleFullscreen" title="Pantalla completa" class="control-btn">
+      <button @click="toggleFullscreen" :class="['control-btn', { active: isFullscreen }]" title="Pantalla completa">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
       </button>
       <button @click="togglePanMode" :class="['control-btn', { active: isPanMode }]" title="Arrastrar libro (activar/desactivar)">
@@ -70,6 +70,7 @@ let panOrigin = { x: 0, y: 0 };
 let imageList = [];
 const pageInput = ref(1);
 const totalPages = ref(0);
+const isFullscreen = ref(false);
 
 const supportsAnimatedTitle = computed(() => {
   // Detecta soporte básico de CSS variables y span
@@ -134,6 +135,9 @@ onMounted(async () => {
     console.warn('No images found for flipbook.');
   }
   window.addEventListener('keydown', handleKeydown);
+  document.addEventListener('fullscreenchange', () => {
+    isFullscreen.value = !!document.fullscreenElement;
+  });
 });
 
 onUnmounted(() => {
@@ -365,19 +369,19 @@ function handleKeydown(e) {
 .flipbook-controls {
   position: absolute;
   top: 0.5rem;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 200;
   background: #222d;
   border-radius: 1.5em;
   box-shadow: 0 2px 8px #0006;
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 0.3em;
   padding: 0.3em 0.5em;
-  width: 98vw;
+  width: auto;
   max-width: 100vw;
 }
 
@@ -397,6 +401,21 @@ function handleKeydown(e) {
   outline: none;
   margin: 0;
   padding: 0;
+}
+.control-btn svg {
+  display: block;
+  margin: auto;
+}
+.control-btn:hover {
+  background: #3c8cff;
+  color: #fff;
+  box-shadow: 0 2px 8px #0003;
+}
+/* Sólo el botón de pan (togglePanMode) se queda azul cuando está activo */
+.control-btn.active {
+  background: #3c8cff;
+  color: #fff;
+  box-shadow: 0 2px 8px #0003;
 }
 
 .flipbook-root {
@@ -485,20 +504,20 @@ function handleKeydown(e) {
 }
 
 @media (max-width: 900px) {
+  .flipbook-controls {
+    top: 0.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.2em 0.2em;
+    gap: 0.2em;
+    width: auto;
+    max-width: 100vw;
+  }
   .flipbook-root {
     width: 98vw;
     height: 80vw;
     max-width: 100vw;
     max-height: 80vh;
-  }
-  .flipbook-controls {
-    top: 0.2rem;
-    left: 0;
-    right: 0;
-    padding: 0.2em 0.2em;
-    gap: 0.2em;
-    width: 99vw;
-    max-width: 100vw;
   }
   .pdf-title {
     font-size: 1.2rem;
@@ -511,6 +530,16 @@ function handleKeydown(e) {
 }
 
 @media (max-width: 600px) {
+  .flipbook-controls {
+    top: 0.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.1em 0.1em;
+    gap: 0.1em;
+    width: auto;
+    max-width: 100vw;
+    font-size: 0.9em;
+  }
   .flipbook-root {
     width: 100vw;
     height: 60vw;
@@ -527,16 +556,6 @@ function handleKeydown(e) {
     max-width: 100vw;
     max-height: 100dvh;
     padding: 0;
-  }
-  .flipbook-controls {
-    top: 0.1rem;
-    left: 0;
-    right: 0;
-    padding: 0.1em 0.1em;
-    gap: 0.1em;
-    width: 100vw;
-    max-width: 100vw;
-    font-size: 0.9em;
   }
   .pdf-title {
     font-size: 0.9rem;
